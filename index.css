@@ -1,0 +1,39 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+#app{
+  border: 2px #111111 solid;
+  margin: 0 auto;
+  width: 222px;
+  padding: 0 2px;
+}
+.col{
+  display: flex;
+  justify-content: space-around;
+  margin: 2px 0;
+}
+.grid{
+  box-sizing: border-box;
+  padding: 2px;
+  width: 20px;
+  height: 20px;
+  border: 2px #879372 solid;
+}
+.grid::after{
+  display: block;
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: #879372;
+}
+.grid.active{
+  border: 2px #111111 solid;
+}
+.grid.active::after{
+  display: block;
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: #111111;
+}

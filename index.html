@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="index.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div id="app">
+        <div v-for="(col,i) in baseMap" :key="i" class="col" @click="transform3">
+            <div v-for="(grid,i) in col" :key="i" class="grid" :class="{active:grid}"></div>
+        </div>
+
+    </div>
+    <script src="vue.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
