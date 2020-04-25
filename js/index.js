@@ -1008,9 +1008,9 @@ var app = new Vue({
     },
     square() {
       this.squareState = 1
-      // this.currentSquare = 'square'+Math.floor(Math.random()*7+1)
+      this.currentSquare = 'square'+Math.floor(Math.random()*7+1)
       // console.log(num)
-      this.currentSquare = 'square7'
+      // this.currentSquare = 'square7'
       this.initPos = this[this.currentSquare].map((block)=>({x:block.x,y:block.y}))
       // console.log(this.currentSquare)
       this.fall()
