@@ -12,7 +12,9 @@
                 <div v-for="(grid,i) in col" :key="i" class="grid" :class="{active:grid}"></div>
             </div>
         </div>
-        <div class="score"><b>分数:{{score}}</b></div>
+        <div class="score"><b>分数:{{score}}</b><b>{{pause?'已暂停':null}}</b></div>
+        <div class="score"><b>{{play?'r重玩,p暂停':'空格键开始'}}</b></div>
+        <div class="score"><b>{{play?'r重玩,p暂停':'空格键开始'}}</b></div>
     </div>
     <script src="./js/vue.js"></script>
     <script src="./js/index.js"></script>
