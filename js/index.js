@@ -714,12 +714,14 @@ var app = new Vue({
     square() {
       //初始化方块状态
       this.squareState = 1
+
       //1-7随机一个数字给当前方块
       this.currentSquare = 'square' + Math.floor(Math.random() * 7 + 1)
       console.log(this.currentSquare)
       // this.currentSquare = 'square7'
       //初始化即将下落的方块
       this.initPos = this[this.currentSquare].map((block) => ({x: block.x, y: block.y}))
+
       // console.log(this.currentSquare)
       //调用下落函数
       this.fall()
