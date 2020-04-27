@@ -25,19 +25,19 @@ var app = new Vue({
       [0,0,0,0,0,0,0,0,0,0],
     ],
     //长条
-    square1:[{x: 3, y:0 }, {x: 4, y: 0}, {x: 5, y: 0}, {x: 6, y: 0}],
+    square1:[{x: 3, y:-1 }, {x: 4, y: -1}, {x: 5, y: -1}, {x: 6, y: -1}],
     //矩形
-    square2:[{x:4,y:0},{x:5,y:0},{x:4,y:1},{x:5,y:1}],
+    square2:[{x:4,y:-1},{x:5,y:-1},{x:4,y:0},{x:5,y:0}],
     //拐1：|_
-    square3:[{x:4,y:0},{x:4,y:1},{x:5,y:1},{x:6,y:1}],
+    square3:[{x:4,y:-1},{x:4,y:0},{x:5,y:0},{x:6,y:0}],
     //拐2  _|
-    square4:[{x:4,y:1},{x:5,y:1},{x:6,y:1},{x:6,y:0}],
+    square4:[{x:4,y:0},{x:5,y:0},{x:6,y:0},{x:6,y:-1}],
     //丁
-    square5:[{x:4,y:1},{x:5,y:1},{x:6,y:1},{x:5,y:0}],
+    square5:[{x:4,y:0},{x:5,y:0},{x:6,y:0},{x:5,y:-1}],
     //反Z
-    square6:[{x:4,y:1},{x:5,y:1},{x:5,y:0},{x:6,y:0}],
+    square6:[{x:4,y:0},{x:5,y:0},{x:5,y:-1},{x:6,y:-1}],
     //正Z
-    square7:[{x:4,y:0},{x:5,y:0},{x:5,y:1},{x:6,y:1}],
+    square7:[{x:4,y:-1},{x:5,y:-1},{x:5,y:0},{x:6,y:0}],
     //用来存放方块的实时位置
     initPos:[],
     //用来存放方块的上一次位移的位置
@@ -50,10 +50,11 @@ var app = new Vue({
     squareSum : 1,
     //分数
     score:0,
+    historyScore:[],
     //清除的行数
     clearCount:0,
     //自然下落定时器ID
-    timeOutId:null,
+    nativeFallingID:null,
     //左右移动定时器ID
     //左右下移动定时器是否正在进行中
     leftMoveID:null,
@@ -63,7 +64,11 @@ var app = new Vue({
     falling:false,
     //暂停标记
     pause:false,
-    play:false
+    //刷新中标记
+    refreshing:false,
+    //游戏中标记
+    playing:false,
+
   },
   methods: {
     //方块变形方法
@@ -79,17 +84,25 @@ var app = new Vue({
           this.initPos[3].x -= 2
           //变形前判断变形后是否会碰撞或触底
           if (this.isCollision()) {
-            //修正
-            this.initPos[0].y += 1
-            this.initPos[0].x -= 1
-            this.initPos[2].y -= 1
-            this.initPos[2].x += 1
-            this.initPos[3].y -= 2
-            this.initPos[3].x += 2
-            //重新渲染，并且不用抹除
-            this.render()
-            //直接结束本次变形，不改变方块状态
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              //修正
+              this.initPos[0].y += 1
+              this.initPos[0].x -= 1
+              this.initPos[2].y -= 1
+              this.initPos[2].x += 1
+              this.initPos[3].y -= 2
+              this.initPos[3].x += 2
+              //重新渲染，并且不用抹除
+              this.render()
+              //直接结束本次变形，不改变方块状态
+              return
+            }
           } else {
             this.render()
             //改变方块状态
@@ -106,14 +119,22 @@ var app = new Vue({
           this.initPos[3].y -= 2
           this.initPos[3].x += 2
           if (this.isCollision()) {
-            this.initPos[0].y -= 1
-            this.initPos[0].x += 1
-            this.initPos[2].y += 1
-            this.initPos[2].x -= 1
-            this.initPos[3].y += 2
-            this.initPos[3].x -= 2
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState--
+              return
+            }else if(this.move('r',true)){
+              this.squareState--
+              return
+            }else {
+              this.initPos[0].y -= 1
+              this.initPos[0].x += 1
+              this.initPos[2].y += 1
+              this.initPos[2].x -= 1
+              this.initPos[3].y += 2
+              this.initPos[3].x -= 2
+              this.render()
+              return
+            }
           } else {
             this.squareState--
             this.render()
@@ -133,14 +154,22 @@ var app = new Vue({
           this.initPos[2].x -= 1
           this.initPos[3].x -= 2
           if (this.isCollision()) {
-            this.initPos[0].y += 1
-            this.initPos[0].x -= 1
-            this.initPos[1].y += 2
-            this.initPos[2].y += 1
-            this.initPos[2].x += 1
-            this.initPos[3].x += 2
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y += 1
+              this.initPos[0].x -= 1
+              this.initPos[1].y += 2
+              this.initPos[2].y += 1
+              this.initPos[2].x += 1
+              this.initPos[3].x += 2
+              this.render()
+              return
+            }
           }
           this.render()
           this.squareState++
@@ -155,14 +184,22 @@ var app = new Vue({
           this.initPos[2].x += 1
           this.initPos[3].y -= 2
           if (this.isCollision()) {
-            this.initPos[0].y -= 1
-            this.initPos[0].x -= 1
-            this.initPos[1].x -= 2
-            this.initPos[2].y += 1
-            this.initPos[2].x -= 1
-            this.initPos[3].y += 2
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y -= 1
+              this.initPos[0].x -= 1
+              this.initPos[1].x -= 2
+              this.initPos[2].y += 1
+              this.initPos[2].x -= 1
+              this.initPos[3].y += 2
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -177,14 +214,22 @@ var app = new Vue({
           this.initPos[2].x += 1
           this.initPos[3].x += 2
           if (this.isCollision()) {
-            this.initPos[0].y -= 1
-            this.initPos[0].x += 1
-            this.initPos[1].y -= 2
-            this.initPos[2].y -= 1
-            this.initPos[2].x -= 1
-            this.initPos[3].x -= 2
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y -= 1
+              this.initPos[0].x += 1
+              this.initPos[1].y -= 2
+              this.initPos[2].y -= 1
+              this.initPos[2].x -= 1
+              this.initPos[3].x -= 2
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -199,14 +244,22 @@ var app = new Vue({
           this.initPos[2].x -= 1
           this.initPos[3].y += 2
           if (this.isCollision()) {
-            this.initPos[0].y += 1
-            this.initPos[0].x += 1
-            this.initPos[1].x += 2
-            this.initPos[2].y -= 1
-            this.initPos[2].x += 1
-            this.initPos[3].y -= 2
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState=1
+              return
+            }else if(this.move('r',true)){
+              this.squareState=1
+              return
+            }else {
+              this.initPos[0].y += 1
+              this.initPos[0].x += 1
+              this.initPos[1].x += 2
+              this.initPos[2].y -= 1
+              this.initPos[2].x += 1
+              this.initPos[3].y -= 2
+              this.render()
+              return
+            }
           }
           this.squareState = 1
           this.render()
@@ -223,14 +276,22 @@ var app = new Vue({
           this.initPos[3].y += 1
           this.initPos[3].x -= 1
           if (this.isCollision()) {
-            this.initPos[0].y += 2
-            this.initPos[1].y += 1
-            this.initPos[1].x += 1
-            this.initPos[2].x += 2
-            this.initPos[3].y -= 1
-            this.initPos[3].x += 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y += 2
+              this.initPos[1].y += 1
+              this.initPos[1].x += 1
+              this.initPos[2].x += 2
+              this.initPos[3].y -= 1
+              this.initPos[3].x += 1
+              this.render()
+              return
+            }
           }
           this.render()
           this.squareState++
@@ -245,14 +306,22 @@ var app = new Vue({
           this.initPos[3].y -= 1
           this.initPos[3].x -= 1
           if (this.isCollision()) {
-            this.initPos[0].x -= 2
-            this.initPos[1].y += 1
-            this.initPos[1].x -= 1
-            this.initPos[2].y += 2
-            this.initPos[3].y += 1
-            this.initPos[3].x += 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].x -= 2
+              this.initPos[1].y += 1
+              this.initPos[1].x -= 1
+              this.initPos[2].y += 2
+              this.initPos[3].y += 1
+              this.initPos[3].x += 1
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -267,14 +336,22 @@ var app = new Vue({
           this.initPos[3].y -= 1
           this.initPos[3].x += 1
           if (this.isCollision()) {
-            this.initPos[0].y -= 2
-            this.initPos[1].y -= 1
-            this.initPos[1].x -= 1
-            this.initPos[2].x -= 2
-            this.initPos[3].y += 1
-            this.initPos[3].x -= 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y -= 2
+              this.initPos[1].y -= 1
+              this.initPos[1].x -= 1
+              this.initPos[2].x -= 2
+              this.initPos[3].y += 1
+              this.initPos[3].x -= 1
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -289,14 +366,22 @@ var app = new Vue({
           this.initPos[3].y += 1
           this.initPos[3].x += 1
           if (this.isCollision()) {
-            this.initPos[0].x += 2
-            this.initPos[1].y -= 1
-            this.initPos[1].x += 1
-            this.initPos[2].y -= 2
-            this.initPos[3].y -= 1
-            this.initPos[3].x -= 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState=1
+              return
+            }else if(this.move('r',true)){
+              this.squareState=1
+              return
+            }else {
+              this.initPos[0].x += 2
+              this.initPos[1].y -= 1
+              this.initPos[1].x += 1
+              this.initPos[2].y -= 2
+              this.initPos[3].y -= 1
+              this.initPos[3].x -= 1
+              this.render()
+              return
+            }
           }
           this.squareState = 1
           this.render()
@@ -309,10 +394,18 @@ var app = new Vue({
           this.initPos[0].y += 1
           this.initPos[0].x += 1
           if (this.isCollision()) {
-            this.initPos[0].y -= 1
-            this.initPos[0].x -= 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y -= 1
+              this.initPos[0].x -= 1
+              this.render()
+              return
+            }
           }
           this.render()
           this.squareState++
@@ -323,10 +416,18 @@ var app = new Vue({
           this.initPos[3].y += 1
           this.initPos[3].x -= 1
           if (this.isCollision()) {
-            this.initPos[3].y -= 1
-            this.initPos[3].x += 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[3].y -= 1
+              this.initPos[3].x += 1
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -337,10 +438,18 @@ var app = new Vue({
           this.initPos[2].y -= 1
           this.initPos[2].x -= 1
           if (this.isCollision()) {
-            this.initPos[2].y += 1
-            this.initPos[2].x += 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[2].y += 1
+              this.initPos[2].x += 1
+              this.render()
+              return
+            }
           }
           this.squareState++
           this.render()
@@ -351,10 +460,18 @@ var app = new Vue({
           this.initPos[0].y -= 1
           this.initPos[0].x += 1
           if (this.isCollision()) {
-            this.initPos[0].y += 1
-            this.initPos[0].x -= 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState=1
+              return
+            }else if(this.move('r',true)){
+              this.squareState=1
+              return
+            }else {
+              this.initPos[0].y += 1
+              this.initPos[0].x -= 1
+              this.render()
+              return
+            }
           }
           this.squareState = 1
           this.render()
@@ -378,15 +495,23 @@ var app = new Vue({
           //变形前判断变形后是否会碰撞或触底
           if (this.isCollision()) {
             //修正
-            this.initPos[0].y += 1
-            this.initPos[1].x += 1
-            this.initPos[2].y -= 1
-            this.initPos[3].y -= 2
-            this.initPos[3].x += 1
-            //重新渲染，并且不用抹除
-            this.render()
-            //直接结束本次变形，不改变方块状态
-            return
+            if(this.move('l',true)){
+              this.squareState++
+              return
+            }else if(this.move('r',true)){
+              this.squareState++
+              return
+            }else {
+              this.initPos[0].y += 1
+              this.initPos[1].x += 1
+              this.initPos[2].y -= 1
+              this.initPos[3].y -= 2
+              this.initPos[3].x += 1
+              //重新渲染，并且不用抹除
+              this.render()
+              //直接结束本次变形，不改变方块状态
+              return
+            }
           } else {
             this.render()
             //改变方块状态
@@ -402,13 +527,21 @@ var app = new Vue({
           this.initPos[3].y -= 2
           this.initPos[3].x += 1
           if (this.isCollision()) {
-            this.initPos[0].y -= 1
-            this.initPos[1].x -= 1
-            this.initPos[2].y += 1
-            this.initPos[3].y += 2
-            this.initPos[3].x -= 1
-            this.render()
-            return
+            if(this.move('l',true)){
+              this.squareState--
+              return
+            }else if(this.move('r',true)){
+              this.squareState--
+              return
+            }else {
+              this.initPos[0].y -= 1
+              this.initPos[1].x -= 1
+              this.initPos[2].y += 1
+              this.initPos[3].y += 2
+              this.initPos[3].x -= 1
+              this.render()
+              return
+            }
           } else {
             this.squareState--
             this.render()
@@ -428,6 +561,13 @@ var app = new Vue({
         //变形前判断变形后是否会碰撞或触底
         if (this.isCollision()) {
           //修正
+          if(this.move('l',true)){
+            this.squareState++
+            return
+          }else if(this.move('r',true)){
+            this.squareState++
+            return
+          }else{
           this.initPos[0].x -= 2
           this.initPos[1].y -= 1
           this.initPos[1].x -= 1
@@ -437,6 +577,7 @@ var app = new Vue({
           this.render()
           //直接结束本次变形，不改变方块状态
           return
+          }
         } else {
           this.render()
           //改变方块状态
@@ -452,13 +593,22 @@ var app = new Vue({
         this.initPos[3].y -= 1
         this.initPos[3].x += 1
         if (this.isCollision()) {
-          this.initPos[0].x += 2
-          this.initPos[1].y += 1
-          this.initPos[1].x += 1
-          this.initPos[3].y += 1
-          this.initPos[3].x -= 1
-          this.render()
-          return
+          if(this.move('l',true)){
+            this.squareState--
+            return
+          }else if(this.move('r',true)){
+            this.squareState--
+            return
+          }else{
+            this.initPos[0].x += 2
+            this.initPos[1].y += 1
+            this.initPos[1].x += 1
+            this.initPos[3].y += 1
+            this.initPos[3].x -= 1
+            this.render()
+            return
+          }
+
         } else {
           this.squareState--
           this.render()
@@ -474,32 +624,45 @@ var app = new Vue({
       //3. this.initPos.some(block=>block.y>20||(block.x<0||block.x>9)) 判断实时位置单元坐标x,y轴是否越界
       return (this.initPos.some(block => !this.baseMap[block.y]) || this.initPos.some(block => this.baseMap[block.y][block.x]) || this.initPos.some(block => block.y > 20 || (block.x < 0 || block.x > 9)))
     },
+    // isMoveOptimization(){
+    //   return
+    // },
     //设置移动定时器
-    move(direction) {
+    move(direction,correction) {
       //惯例移动前抹除
-      this.clear()
+      //判断是不是变形移动优化，避免在这里清除变形的位移，造成不该清除的单元被清除
+      correction ? null :this.clear()
       //横轴坐标改变,判断方向
       this.initPos.forEach(block => {
         direction === 'l' ? block.x -= 1 : direction === 'r' ? block.x += 1 : null
       })
       //渲染变形前判断变形后是否会碰撞或触底
+
       if (this.isCollision()) {
         //修正
         this.initPos.forEach(block => {
           direction === 'l' ? block.x += 1 : direction === 'r' ? block.x -= 1 : null
         })
+        //是否是变形碰撞优化?,若是，就不对此次移动渲染，防止会抹除掉旁边的单元
+        //** 因为如果变形优化进入到此判断，会传递进来transform阶段initPos还未修正的值，而实际上还没做出优化动作
+        //而此时如果渲染transform变形之后的值，会在elseif进入下一个move的时候clear抹除，造成抹除不该抹除的单元
+        correction ? null :this.render()
+        return false
+      }else{
+        this.render()
+        return true
       }
-      this.render()
+
     },
     //按键按下开启移动
     startMove(e) {
       //避免报错，先判断需要的数据是否存在,是否在暂停
-      if (this.initPos && !this.pause) {
+      if (this.initPos && !this.pause && !this.freshing) {
         //这里只需要结束下落定时器，并设置新的下落定时器
         if (e.key === 'ArrowDown') {
           //主动下落，先关掉被动下落定时器，再自行调用并设置参数
           if (!this.falling) {
-            clearInterval(this.timeOutId)
+            clearInterval(this.nativeFallingID)
             this.falling = true
             this.fall(50)
           }
@@ -527,7 +690,7 @@ var app = new Vue({
         if (e.key === ' ') {
           //空格键直接落下
           if (!this.falling) {
-            clearInterval(this.timeOutId)
+            clearInterval(this.nativeFallingID)
             this.fall(0)
           }
         }
@@ -545,46 +708,28 @@ var app = new Vue({
         }
         //恢复下落速度
         if (e.key === 'ArrowDown') {
-          clearInterval(this.timeOutId)
+          clearInterval(this.nativeFallingID)
+          //下键抬起，主动下落结束，关闭标记，并重新调用被动下落
           this.falling = false
           this.fall()
         }
     },
     //为按键抬起事件分配任务
     keyEvent(e) {
-      //判断是否是r重玩键，或者是否游戏未开始，并且按下的是空格键
-      if((e.key === 'r')|| (e.key=== ' '&& !this.play)){
+      //重玩键，关闭下落定时器，执行刷新,刷新过程游戏处于refreshing状态
+      if(e.key === 'r'){
+          this.refresh()
+      }
+      //游戏未开始，未暂停，未刷新，并且按下的是空格键
+      if(e.key=== ' '&& !this.refreshing &&!this.pause&&!this.playing){
         //重置部分参数
-        this.play = true
-        this.baseMap=[
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-        ]
-        this.pause = false
-        clearInterval(this.timeOutId)
-        //重启游戏
+        this.playing = true
+        clearInterval(this.nativeFallingID)
+        //开启游戏
         this.square()
       }
-      //判断是否是暂停键，并切换暂停
-      if(e.key==='p'){
+      //判断是否是暂停键，并切换暂停，暂停必须在游戏进行中并且不在刷新中
+      if(e.key==='p'&&this.playing&&!this.refreshing){
         this.pause=!this.pause
       }
       //如果抬起向上键，分配各自方块的变形任务
@@ -627,30 +772,34 @@ var app = new Vue({
       if(this.initPos){
         this.initPos.forEach((block => {
           //$set显式赋值，避免vue监听不到数组变化
-          this.$set(this.baseMap[block.y], block.x, 1)
+          if(this.baseMap[block.y]){
+            this.$set(this.baseMap[block.y], block.x, 1)
+            this.lastPos.push({x: block.x, y: block.y})
+          }
         }))
         //渲染完成后，把该坐标存到上次移动坐标的数组里，准备在clear函数里抹除
-        this.lastPos = this.initPos.map(block => ({x: block.x, y: block.y}))
+        // this.lastPos = this.initPos.map(block => ({x: block.x, y: block.y}))
       }
     },
     clear() {
       //先判断是否存在上一次移动的位置，避免报错 xxx of undefined
-      if (this.lastPos!=null) {
+      if (this.lastPos.length) {
         this.lastPos.forEach((block => {
           //抹除
           this.$set(this.baseMap[block.y], block.x, 0)
         }))
         //清除上一次的坐标
-        //length为0也可以遍历，所以这里让他等于null
-        this.lastPos = null
+        this.lastPos = []
       }
     },
     fall(delay = 500) {
-      //设置定时器，默认延时300ms
-      this.timeOutId = setInterval(() => {
-        //判断游戏有没有暂停
+      //设置定时器，默认延时500ms
+      //先调用一次render，首帧渲染
+      this.render()
+      this.nativeFallingID = setInterval(() => {
+        //不断的判断游戏有没有暂停，如果被暂停了就直接清除定时器并return了
         if(this.pause){
-          clearInterval(this.timeOutId)
+          clearInterval(this.nativeFallingID)
           return
         }
         //渲染之前先抹除上一次移动的坐标
@@ -668,17 +817,25 @@ var app = new Vue({
           //重新渲染
           this.render()
           //结束下降
-          clearInterval(this.timeOutId)
+          clearInterval(this.nativeFallingID)
           //把用来抹除的数组清零,避免已经落下的方块被抹除
-          this.lastPos = null
-          //设置squareSum并监听squareSum,判断isgameover?游戏结束即squareSum就是下落的方块数,
-          // 游戏没有结束继续加squareSum,squareSum变动就自动调用square方法
-          this.squareSum = this.isGameOver() ? this.squareSum : ++this.squareSum
-          this.play = this.isGameOver() ? false : true
+          this.lastPos = []
           //判断有无清除行
           this.isClear()
           //计算得分
           this.score = (this.squareSum - 1) * 10 + this.clearCount * 100
+          if(this.isGameOver()){
+            //设置squareSum并监听squareSum,判断isgameover?游戏结束即squareSum就是下落的方块数,
+            //游戏结束，playing状态改为false
+            //游戏结束，调用刷新
+            this.playing = false
+            this.refresh()
+            this.historyScore.push(this.score)
+            this.score = 0
+          }else{
+            //游戏没有结束继续加squareSum,squareSum变动就自动调用square方法继续掉落方块
+            this.squareSum++
+          }
         } else {
           //无触底直接渲染
           this.render()
@@ -713,6 +870,7 @@ var app = new Vue({
     //初始化方块，并调用下落方法
     square() {
       //初始化方块状态
+
       this.squareState = 1
 
       //1-7随机一个数字给当前方块
@@ -725,57 +883,63 @@ var app = new Vue({
       // console.log(this.currentSquare)
       //调用下落函数
       this.fall()
+    },
+    //在游戏结束或者重新开始时，执行刷新屏幕特效
+    refresh () {
+        this.refreshing = true
+      this.initPos =[]
+        //promise包裹一个异步执行的操作，从地图数组最后一行开始每20ms执行一次整行的渲染
+        new Promise((resolve,reject)=>{
+          let i = 19
+          let timeout1 = setInterval(()=>{
+            for(let j =9;j>=0;j-- ){
+              this.$set(this.baseMap[i], j, 1)
+            }
+            //如果渲染到最上面一行了resolve
+            i===0?clearInterval(timeout1) :--i
+            i===0?resolve(i):null
+          },20)
+        }).then((i)=> {
+          //开始从上往下清除刷新
+          return new Promise((resolve)=>{
+            let timeout2 = setInterval(()=>{
+              for(let j =9;j>=0;j-- ){
+              this.$set(this.baseMap[i], j, 0)
+              }
+
+              i===19?clearInterval(timeout2):i++
+              if(i===19)resolve(i)
+          },20)
+          })
+        }).then((i)=>{
+          console.log(i)
+          this.refreshing = false
+          this.playing = false
+          this.pause = false
+        })
     }
   },
   computed:{
-
+    maxScore(){
+      return Math.max(0,...this.historyScore)
+    }
   },
   watch:{
-    //监听squareSum变化，变化即方块已落下，squareSum+1，则调用square方法继续下落
+    //监听游戏是否暂停
     pause:function () {
       if(!this.pause){
-        clearInterval(this.timeOutId)
+        clearInterval(this.nativeFallingID)
         this.fall()
       }
     },
+    //监听squareSum变化，变化即方块已落下，squareSum+1，则调用square方法继续下落
     squareSum:'square',
   },
   created(){
-    this.play ? this.square() : null
+    //监听键盘事件
     document.onkeydown = this.startMove
     document.onkeyup = this.keyEvent
-    // document.onkeypress = this.keyEvent
-    // document.onkeydown = (e)=>{
-    //   console.log(e)
-    //   if(e.keyCode === 82 ){
-    //     clearInterval(this.timeOutId)
-    //     this.initPos = []
-    //     this.lastPos = []
-    //     this.baseMap = [
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //       [0,0,0,0,0,0,0,0,0,0],
-    //     ]
-    //     this.square()
-    //   }
-    // }
+
   }
 })
 
