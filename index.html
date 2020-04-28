@@ -2,22 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!--    <meta name="viewport" content="width=640,user-scalable=no,target-densitydpi=device-dpi">-->
     <title>Title</title>
     <link href="./css/index.css" rel="stylesheet" type="text/css">
+    <script src="./js/vue.js"></script>
 </head>
 <body>
     <div id="app">
-        <div class="screen">
-            <div v-for="(col,i) in baseMap" :key="i" class="col">
-                <div v-for="(grid,i) in col" :key="i" class="grid" :class="{active:grid}"></div>
+        <div class="shell">
+            <div class="screenWrapper">
+                <div class="panel">
+                    <div class="screen">
+                        <div class="matrix">
+                            <div v-for="(col,i) in baseMap" :key="i" class="col">
+                                <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid,twinkle:col.every(g=>g)&&!refreshing}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-item currentScore">
+                            <div></div>
+                            <div>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="info-item topScore">最高分</div>
+                        <div class="info-item level">级别</div>
+                        <div class="info-item nextSquare">下一个</div>
+                        <div class="info-item system">最高分</div>
+                    </div>
+                    <div class="logo" v-show="!playing&&!refreshing">
+                        <div :class="bgDragon"></div>
+                    </div>
+                </div>
+
+<!--                <div class="score"><b>{{`分数:  ${score}`}}</b></div>-->
+<!--                <div class="score"><b>{{pause?'已暂停':null}}</b></div>-->
+<!--                <div class="score"><b>{{playing?'按R键重开， 按P暂停':'空格键开始'}}</b></div>-->
+<!--                <div class="score"><b>{{'最高分：'+maxScore}}</b></div>-->
             </div>
+            <div class="operator"></div>
         </div>
-        <div class="score"><b>{{`分数:  ${score}`}}</b></div>
-        <div class="score"><b>{{pause?'已暂停':null}}</b></div>
-        <div class="score"><b>{{playing?'按R键重开， 按P暂停':'空格键开始'}}</b></div>
-        <div class="score"><b>{{'最高分：'+maxScore}}</b></div>
+
     </div>
-    <script src="./js/vue.js"></script>
     <script src="./js/index.js"></script>
 </body>
 </html>
