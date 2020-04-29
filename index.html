@@ -7,6 +7,7 @@
     <title>Title</title>
     <link href="./css/index.css" rel="stylesheet" type="text/css">
     <script src="./js/vue.js"></script>
+    <script src="./js/howler.js"></script>
 </head>
 <body>
     <div id="app">
@@ -22,20 +23,38 @@
                     </div>
                     <div class="info">
                         <div class="info-item currentScore">
-                            <div></div>
+                            <p>得分</p>
                             <div>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                                <span v-for="(item,i) in currentScoreBG" :class="item"></span>
                             </div>
                         </div>
-                        <div class="info-item topScore">最高分</div>
-                        <div class="info-item level">级别</div>
-                        <div class="info-item nextSquare">下一个</div>
-                        <div class="info-item system">最高分</div>
+                        <div class="info-item topScore">
+                            <p>历史最高分</p>
+                            <div>
+                                <span v-for="(item,i) in maxScoreBG" :class="item"></span>
+                            </div>
+                        </div>
+                        <div class="info-item level">
+                            <p>级别</p>
+                            <div>
+                                <span :class="speedLevel"></span>
+                            </div>
+                        </div>
+                        <div class="info-item nextSquare">
+                            <p>下一个</p>
+                            <div>
+                                <div v-for="(col,i) in nextSquare" :key="i" class="col">
+                                    <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item system">
+                            <div class="pause" :class="{pauseIcon1:pause,pauseIcon0:!pause}"></div>
+                            <div class="audio" :class="{audioIcon1:audio,audioIcon0:!audio}"></div>
+                            <div class="systemTime">
+                                <span class="timeNumber" v-for="(item,i) in timeNumberBG" :key="i" :class="item"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="logo" v-show="!playing&&!refreshing">
                         <div :class="bgDragon"></div>
@@ -52,5 +71,6 @@
 
     </div>
     <script src="./js/index.js"></script>
+<!--    <script src="./js/event.js"></script>-->
 </body>
 </html>
