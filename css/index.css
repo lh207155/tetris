@@ -28,6 +28,7 @@ body{
   width: 565px;
   height: 100vh;
   background: #00dbf1;
+  position: relative;
 }
 .screenWrapper{
   border: 8px #000 dashed;

@@ -14,6 +14,7 @@ Vue.prototype.$sound = sound
 var app = new Vue({
   el: '#app',
   data:{
+    scale2:'',
     scale:'',
     audioID:null,
     //音效
@@ -1192,12 +1193,12 @@ var app = new Vue({
   mounted(){
     if(document.body.clientWidth<565){
       this.scale=`transform:scale(${document.body.clientWidth/565});margin-left:-${(565-document.body.clientWidth)/2}px`
-      // this.scale2=`margin-bottom:-${(565-document.body.clientWidth)-40}px;margin-top:-${(565-document.body.clientWidth)/2}px`
+      this.scale2=`top:-${(565-document.body.clientWidth)}px`
     }
     document.body.onresize = ()=>{
       if(document.body.clientWidth<565){
         this.scale=`transform:scale(${document.body.clientWidth/565});margin-left:-${(565-document.body.clientWidth)/2}px`
-        // this.scale2=`margin-bottom:-${(565-document.body.clientWidth)-40}px;margin-top:-${(565-document.body.clientWidth)/2}px`
+        this.scale2=`top:-${565-document.body.clientWidth}px`
       }
     }
   }
