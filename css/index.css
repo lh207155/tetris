@@ -1,30 +1,60 @@
+@media screen and (max-width: 565px){
+  body{
+    background: #00dbf1;
+  }
+}
 *{
   padding: 0;
   margin: 0;
 }
+html{
+  width: 100%;
+  height: 100%;
+}
+body{
+  width: 100%;
+  height: 100%;
+}
+#app{
+  width: 565px;
+  height: 100vh;
+  margin: 0 auto;
+}
 .shell{
-  border: 0.077rem black solid;
+  border: 1px solid transparent;
+  border-radius: 10px;
   box-sizing: border-box;
   margin: 0 auto;
-  width: 640px;
+  width: 565px;
   height: 100vh;
+  background: #00dbf1;
 }
 .screenWrapper{
-  border: 1px #000 solid;
+  border: 8px #000 dashed;
+  width: 420px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 80px auto;
+  margin: 40px auto;
+  /*box-sizing: border-box;*/
+  /*background: #000;*/
+}
+.panelBorder{
+  border: 4px solid;
+  border-color:#008f9d #99FFFF #99FFFF #008f9d;
 }
 .panel{
   background: #9ead86;
   width: 380px;
-  height: 464px;
+  height: 448px;
   padding:8px;
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
   display: flex;
   position: relative;
+  border: 2px solid #494536;
 }
+
 .screen{
 
 }
@@ -113,16 +143,23 @@
 .system{
   display: flex;
   justify-content: space-around;
-  align-items: stretch;
+  align-items: center;
+  flex-wrap: wrap;
 }
 .system>.pause{
   width: 20px;
   height: 18px;
-
+  margin-bottom: 5px;
+  margin-right: 5px;
 }
 .system>.audio{
   width: 25px;
   height: 21px;
+  margin-bottom: 4px;
+}
+.system>.systemTime{
+  margin-top: 10px;
+  margin-left: 5px;
 }
 .system>.systemTime>span{
   display: inline-block;
@@ -137,6 +174,113 @@
   width: 228px;
   text-align: center;
 }
+.operator{
+  display: flex;
+  justify-content: space-around;
+}
+.directionBtn{
+  width: 250px;
+  height: 250px;
+  /*border: 1px solid #000;*/
+  display: flex;
+  flex-direction: column;
+  /*flex-wrap: wrap;*/
+}
+.directionBtn .upBtn{;
+  border-radius: 5px;
+  width: 60px;
+  height: 90px;
+  background: #CCCC00;
+  margin: 0 auto;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  position: relative;
+  top: 25px;
+}
+.directionBtn .x{
+  display: flex;
+  justify-content: space-between;
+}
+.directionBtn .leftBtn{
+  border-radius: 5px;
+  width: 90px;
+  height: 60px;
+  background: #CCCC00;
+  /*margin: 0 auto;*/
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  position: relative;
+  left: 25px;
+
+}
+.directionBtn .btnBG{
+  width: 60px;
+  height: 60px;
+  background: #CCCC00;
+  z-index: 10;
+}
+.directionBtn .rightBtn{
+  border-radius: 5px;
+  width: 90px;
+  height: 60px;
+  background: #CCCC00;
+  /*margin: 0 auto;*/
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  position: relative;
+  left: -25px;
+}
+.directionBtn .downBtn{
+  border-radius: 5px;
+  width: 60px;
+  height: 90px;
+  background: #CCCC00;
+  margin: 0 auto;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  position: relative;
+  top: -25px;
+}
+.systemBtn{
+  width: 80px;
+  height: 250px;
+  /*border: 1px solid #000;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.systemBtn .pauseBtn{
+  width: 35px;
+  height: 35px;
+  border-radius: 40%;
+  background: orange;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+}
+.systemBtn .audioBtn{
+  width: 35px;
+  height: 35px;
+  border-radius: 40%;
+  background: yellow;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+}
+.systemBtn .refreshBtn{
+  width: 35px;
+  height: 35px;
+  border-radius: 40%;
+  background: darkred;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+}
+.functionBtn{
+  width: 150px;
+  height: 250px;
+  /*border: 1px solid #000;*/
+}
+.functionBtn .fallBtn{
+  width: 100px;
+  height: 100px;
+  background: hotpink;
+  border-radius:45% ;
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  margin: 75px 10px;
+}
+
 
 
 

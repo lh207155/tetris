@@ -10,63 +10,93 @@
     <script src="./js/howler.js"></script>
 </head>
 <body>
-    <div id="app">
+    <div id="app" :style="scale">
         <div class="shell">
             <div class="screenWrapper">
-                <div class="panel">
-                    <div class="screen">
-                        <div class="matrix">
-                            <div v-for="(col,i) in baseMap" :key="i" class="col">
-                                <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid,twinkle:col.every(g=>g)&&!refreshing}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info">
-                        <div class="info-item currentScore">
-                            <p>得分</p>
-                            <div>
-                                <span v-for="(item,i) in currentScoreBG" :class="item"></span>
-                            </div>
-                        </div>
-                        <div class="info-item topScore">
-                            <p>历史最高分</p>
-                            <div>
-                                <span v-for="(item,i) in maxScoreBG" :class="item"></span>
-                            </div>
-                        </div>
-                        <div class="info-item level">
-                            <p>级别</p>
-                            <div>
-                                <span :class="speedLevel"></span>
-                            </div>
-                        </div>
-                        <div class="info-item nextSquare">
-                            <p>下一个</p>
-                            <div>
-                                <div v-for="(col,i) in nextSquare" :key="i" class="col">
-                                    <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid}"></div>
+                <div class="panelBorder">
+                    <div class="panel">
+                        <div class="screen">
+                            <div class="matrix">
+                                <div v-for="(col,i) in baseMap" :key="i" class="col">
+                                    <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid,twinkle:col.every(g=>g)&&!refreshing}"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="info-item system">
-                            <div class="pause" :class="{pauseIcon1:pause,pauseIcon0:!pause}"></div>
-                            <div class="audio" :class="{audioIcon1:audio,audioIcon0:!audio}"></div>
-                            <div class="systemTime">
-                                <span class="timeNumber" v-for="(item,i) in timeNumberBG" :key="i" :class="item"></span>
+                        <div class="info">
+                            <div class="info-item currentScore">
+                                <p>得分</p>
+                                <div>
+                                    <span v-for="(item,i) in currentScoreBG" :class="item"></span>
+                                </div>
+                            </div>
+                            <div class="info-item topScore">
+                                <p>历史最高分</p>
+                                <div>
+                                    <span v-for="(item,i) in maxScoreBG" :class="item"></span>
+                                </div>
+                            </div>
+                            <div class="info-item level">
+                                <p>级别</p>
+                                <div>
+                                    <span :class="speedLevel"></span>
+                                </div>
+                            </div>
+                            <div class="info-item nextSquare">
+                                <p>下一个</p>
+                                <div>
+                                    <div v-for="(col,i) in nextSquare" :key="i" class="col">
+                                        <div v-for="(grid,j) in col" :key="j" class="grid" :class="{active:grid}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-item system">
+                                <div class="pause" :class="{pauseIcon1:pause,pauseIcon0:!pause}"></div>
+                                <div class="audio" :class="{audioIcon1:!audio,audioIcon0:audio}"></div>
+                                <div class="systemTime">
+                                    <span class="timeNumber" v-for="(item,i) in timeNumberBG" :key="i" :class="item"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="logo" v-show="!playing&&!refreshing">
-                        <div :class="bgDragon"></div>
+                        <div class="logo" v-show="!playing&&!refreshing">
+                            <div :class="bgDragon"></div>
+                        </div>
                     </div>
                 </div>
-
-<!--                <div class="score"><b>{{`分数:  ${score}`}}</b></div>-->
-<!--                <div class="score"><b>{{pause?'已暂停':null}}</b></div>-->
-<!--                <div class="score"><b>{{playing?'按R键重开， 按P暂停':'空格键开始'}}</b></div>-->
-<!--                <div class="score"><b>{{'最高分：'+maxScore}}</b></div>-->
             </div>
-            <div class="operator"></div>
+            <div class="operator">
+                <div class="directionBtn">
+                    <div class="upBtn" @touchend.prevent="keyEvent({key:'ArrowUp'})" @touchstart.prevent="startMove({key:'ArrowUp'})">
+                        <p style="text-align: center;width: 100% ;position: relative;top: -25px">旋转</p>
+                    </div>
+                    <div class="x">
+                        <div class="leftBtn" @touchend.prevent="keyEvent({key:'ArrowLeft'})" @touchstart.prevent="startMove({key:'ArrowLeft'})">
+                            <p style="line-height: 60px;position: relative;left: -22px">左</p>
+                        </div>
+                        <div class="btnBG"></div>
+                        <div class="rightBtn" @touchend.prevent="keyEvent({key:'ArrowRight'})" @touchstart.prevent="startMove({key:'ArrowRight'})">
+                            <p style="line-height: 60px;margin-left: 45px;position: relative;left: 50px">右</p>
+                        </div>
+                    </div>
+                    <div class="downBtn" @touchend.prevent="keyEvent({key:'ArrowDown'})" @touchstart.prevent="startMove({key:'ArrowDown'})">
+                        <p style="text-align: center;width: 100%;position: relative;top: 95px">下</p>
+                    </div>
+                </div>
+                <div class="systemBtn">
+                    <div class="pauseBtn" @touchstart.prevent="keyEvent({key:'p'})"></div>
+                    <p>暂停(P)</p>
+                    <div class="audioBtn" @touchstart.prevent="keyEvent({key:'m'})"></div>
+                    <p>音效(M)</p>
+                    <div class="refreshBtn" @touchstart.prevent="keyEvent({key:'r'})"></div>
+                    <p>重玩(R)</p>
+                </div>
+                <div class="functionBtn">
+                    <div class="fallBtn" @touchend.prevent="keyEvent({key:' '})" @touchstart.prevent="startMove({key:' '})">
+                        <p style="position: relative;top: -22px">下落(SPACE)</p>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
     </div>

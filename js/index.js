@@ -7,12 +7,14 @@ const sound = new Howl({
     move:[2900,100],
     start:[3700,3500],
     fail: [8100,1100],
-  }
+  },
+  volume:1
 });
 Vue.prototype.$sound = sound
 var app = new Vue({
   el: '#app',
   data:{
+    scale:'',
     audioID:null,
     //音效
     audio:true,
@@ -783,6 +785,12 @@ var app = new Vue({
       //音效
       if(e.key === 'm'){
         this.audio = !this.audio
+        if(this.audio){
+          this.$sound._volume=1
+        }else{
+          this.$sound._volume=0
+          this.$sound.stop()
+        }
       }
       //重玩键，关闭下落定时器，执行刷新,刷新过程游戏处于refreshing状态
       //r不能在消除停顿，或者正在刷新时启用
@@ -1117,13 +1125,15 @@ var app = new Vue({
       setInterval(()=>{
         let date = new Date()
         //获取时间拼接数组
-        let timeStr = Array.from(date.getHours()+''+date.getMinutes())
-        time[0] = `number${timeStr[0]}`
-        time[1] = `number${timeStr[1]}`
+        let hours = date.getHours()
+        let minutes = date.getMinutes()
+        // let timeStr = Array.from(date.getHours()+''+date.getMinutes())
+        time[0] = `number${Math.floor(hours/10)}`
+        time[1] = `number${Math.floor(hours%10)}`
         //切换中间的小豆豆
         time[2] = i?`numberP`:`numberPP`
-        time[3] = `number${timeStr[2]}`
-        time[4] = `number${timeStr[3]}`
+        time[3] = `number${Math.floor(minutes/10)}`
+        time[4] = `number${Math.floor(minutes%10)}`
         i=!i
       },500)
       return time
@@ -1148,6 +1158,7 @@ var app = new Vue({
         this.$set(this.maxScoreBG,j,`number${m[i]}`)
       }
     },
+
     //监听游戏是否暂停
     //取消暂停了之后能够自动调用fall
     pause:function () {
@@ -1177,7 +1188,18 @@ var app = new Vue({
         this.$set(this.maxScoreBG,j,`number${m[i]}`)
       }
     }
-
+  },
+  mounted(){
+    if(document.body.clientWidth<565){
+      this.scale=`transform:scale(${document.body.clientWidth/565});margin-left:-${(565-document.body.clientWidth)/2}px`
+      // this.scale2=`margin-bottom:-${(565-document.body.clientWidth)-40}px;margin-top:-${(565-document.body.clientWidth)/2}px`
+    }
+    document.body.onresize = ()=>{
+      if(document.body.clientWidth<565){
+        this.scale=`transform:scale(${document.body.clientWidth/565});margin-left:-${(565-document.body.clientWidth)/2}px`
+        // this.scale2=`margin-bottom:-${(565-document.body.clientWidth)-40}px;margin-top:-${(565-document.body.clientWidth)/2}px`
+      }
+    }
   }
 })
 
