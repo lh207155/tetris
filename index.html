@@ -65,32 +65,32 @@
             </div>
             <div class="operator">
                 <div class="directionBtn">
-                    <div class="upBtn" @touchend.prevent="keyEvent({key:'ArrowUp'})" @touchstart.prevent="startMove({key:'ArrowUp'})">
+                    <div class="upBtn btn" ref="up" @touchend.prevent="keyEvent({key:'ArrowUp',target:$refs.up})" @touchstart.prevent="startMove({key:'ArrowUp',target:$refs.up})">
                         <p style="text-align: center;width: 100% ;position: relative;top: -25px">旋转</p>
                     </div>
                     <div class="x">
-                        <div class="leftBtn" @touchend.prevent="keyEvent({key:'ArrowLeft'})" @touchstart.prevent="startMove({key:'ArrowLeft'})">
+                        <div class="leftBtn btn" ref="left" @touchend.prevent="keyEvent({key:'ArrowLeft',target:$refs.left})" @touchstart.prevent="startMove({key:'ArrowLeft',target:$refs.left})">
                             <p style="line-height: 60px;position: relative;left: -22px">左</p>
                         </div>
                         <div class="btnBG"></div>
-                        <div class="rightBtn" @touchend.prevent="keyEvent({key:'ArrowRight'})" @touchstart.prevent="startMove({key:'ArrowRight'})">
+                        <div class="rightBtn btn" ref="right" @touchend.prevent="keyEvent({key:'ArrowRight',target:$refs.right})" @touchstart.prevent="startMove({key:'ArrowRight',target:$refs.right})">
                             <p style="line-height: 60px;margin-left: 45px;position: relative;left: 50px">右</p>
                         </div>
                     </div>
-                    <div class="downBtn" @touchend.prevent="keyEvent({key:'ArrowDown'})" @touchstart.prevent="startMove({key:'ArrowDown'})">
+                    <div class="downBtn btn" ref="down" @touchend.prevent="keyEvent({key:'ArrowDown',target:$refs.down})" @touchstart.prevent="startMove({key:'ArrowDown',target:$refs.down})">
                         <p style="text-align: center;width: 100%;position: relative;top: 95px">下</p>
                     </div>
                 </div>
                 <div class="systemBtn">
-                    <div class="pauseBtn" @touchstart.prevent="keyEvent({key:'p'})"></div>
+                    <div class="pauseBtn btn" @touchstart.prevent="keyEvent({key:'p'})"></div>
                     <p>暂停(P)</p>
-                    <div class="audioBtn" @touchstart.prevent="keyEvent({key:'m'})"></div>
+                    <div class="audioBtn btn" @touchstart.prevent="keyEvent({key:'m'})"></div>
                     <p>音效(M)</p>
-                    <div class="refreshBtn" @touchstart.prevent="keyEvent({key:'r'})"></div>
+                    <div class="refreshBtn btn" @touchstart.prevent="keyEvent({key:'r'})"></div>
                     <p>重玩(R)</p>
                 </div>
                 <div class="functionBtn">
-                    <div class="fallBtn" @touchend.prevent="keyEvent({key:' '})" @touchstart.prevent="startMove({key:' '})">
+                    <div class="fallBtn btn" ref="space" @touchend.prevent="keyEvent({key:' ',target:$refs.space})" @touchstart.prevent="startMove({key:' ',target:$refs.space})">
                         <p style="position: relative;top: -22px">下落(SPACE)</p>
                     </div>
 

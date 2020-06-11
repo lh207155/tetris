@@ -698,10 +698,14 @@ var app = new Vue({
     //按键按下开启移动
     startMove(e) {
       //避免报错，先判断需要的数据是否存在,是否在暂停，是否在刷新中，是否在消除的停顿中
-
+      console.log(e)
+      if(e.target){
+        e.target.classList.toggle('active')
+      }  
       if (this.initPos && !this.pause && !this.refreshing&&!this.halt&&this.playing) {
         //这里只需要结束下落定时器，并设置新的下落定时器
         if (e.key === 'ArrowDown') {
+          
           //主动下落，先关掉被动下落定时器，再自行调用并设置参数
           //判断是否正在主动下落中
           if (!this.falling) {
@@ -764,6 +768,10 @@ var app = new Vue({
     //按键抬起关闭定时器
     stopMove(e) {
       //按键如果抬起，说明连续的移动已经结束，关闭相应的计时器，并切换状态
+      console.log(e)
+      if(e.target){
+        e.target.classList.toggle('active')
+      }   
       clearInterval(this.audioID)
         if (e.key === 'ArrowLeft') {
           clearInterval(this.leftMoveID)
@@ -830,6 +838,9 @@ var app = new Vue({
       //如果抬起向上键，分配各自方块的变形任务
       if (this.initPos && !this.pause&&!this.halt){
         if (e.key === 'ArrowUp'&&this.playing) {
+          if(e.target){
+            e.target.classList.toggle('active')
+          }  
           //判断正在下落的方块类型，调用相应的方块变形任务
           this.$sound.play('trans')
           switch (this.currentSquare) {
